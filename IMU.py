@@ -38,4 +38,3 @@ class LSM6:
     def read(self):
         self.read_gyro()
         self.read_accel()
-
