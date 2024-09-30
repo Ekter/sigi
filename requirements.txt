@@ -2,3 +2,4 @@ smbus
 numpy
 tqdm
 ftprci
+Pygments

@@ -7,10 +7,14 @@ estimator = fci.ComplementaryFilter()
 
 pid = fci.PIDController(10, 0, 3, fci.DiscreteIntegral.Tustin())
 
-motors = fci.PololuAstar()
+actuators = fci.PololuAstar()
 
-th = fci.RunnerThread()
+th = fci.RunnerThread(frequency=100)
 
-th.callback | sensor.read | estimator.estimate | pid.steer | motors.command
+th.callback | sensor.read | estimator.estimate | pid.steer | actuators.command
 
-th.run()
+while True:
+    pid.set_order(0.1)
+    fci.sleep(0.5)
+    pid.set_order(-0.1)
+    fci.sleep(0.5)
