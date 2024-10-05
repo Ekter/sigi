@@ -333,6 +333,10 @@ Starting to work with the Sigi can be quite hard, primarily because of its age.
 If the Sigi you have has already been used, you will probably not have to follow this whole
 section entirely, so I advise you to just do the checks for every subsection.
 
+However, your Sigi may have been flashed with a very old version of the Raspberry Pi OS, as it was
+the case for me. In this case, you may have trouble installing various software, like the vs code
+server, or some python libraries for mathematical computations like Clarabel.
+
 \subsection{Hardware}
 
 Let's start by checking the hardware of the Sigi.
@@ -459,7 +463,10 @@ Raspberry Pi. In this case, you can ignore the next section.
 
 It takes some time for the Raspberry Pi to boot for the first time, so be patient.
 
-\subsubsection{Setting up SSH connection without a screen(more complex)(Imager required)}
+For the next steps, you will need to connect to the Raspberry Pi using SSH. Depending on your OS,
+you may need to install an SSH client.
+
+\subsubsection{Setting up SSH connection without a screen(more complex)}
 
 If you have enabled the SSH connection in the Imager, you can connect to the Raspberry Pi using
 SSH, provided that the Raspberry Pi is connected to the Internet, that you know the IP address of
@@ -603,6 +610,9 @@ Install git:
 
 \texttt{sudo apt install git}
 
+And OpenBlas needed to run numpy, clarabel, and most numerical libraries:
+
+\texttt{sudo apt install libopenblas-dev}
 
 We will also need the I2C interface to communicate with the Balboa board, so let's activate it
 on rapsi-config.
@@ -651,7 +661,7 @@ Or you can use the ssh version if you have generated an ssh key and added it to 
 account:
 
 \texttt{git clone git@github.com:Ekter/sigi.git}
-(replace by your repository is this case)
+(replace by your repository if you have created one)
 
 If you need advise on how to use git, here is a nice tutorial:
 \href{https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/
@@ -668,6 +678,181 @@ We should be able to see the files of the repository using the command:
 \texttt{ls}
 
 \includegraphics[scale=0.37]{img/git_worked.png}
+
+\subsubsection{Creating the virtual environment and installing the dependencies}
+
+We will now create a virtual environment to install the dependencies of the project.
+
+Still in the repository, we will use the command:
+
+\texttt{python3 -m venv .venv}
+
+This will create a folder named \texttt{.venv} in the repository, containing the virtual
+environment.
+
+Then we will activate the virtual environment using the command:
+
+\texttt{source .venv/bin/activate}
+
+The prompt should change to show that the virtual environment is activated.
+
+To deactivate the virtual environment, you can simply run \texttt{deactivate}, but don't do it
+for now.
+
+Then we will install the dependencies using the command:
+
+\texttt{pip install -r requirements.txt}
+
+\includegraphics[scale=0.37]{img/venv_activated.png}
+
+Now we should be able to run the code of the Sigi.
+
+If you prefer to use Jupyter notebooks, you should install IPython:
+
+\texttt{pip install ipython}
+
+\subsubsection{Check}
+
+We will run the code to check if everything is working.
+
+To just read the sensors data, we will use the script:
+
+\texttt{python3 get\_sensors.py}
+
+It should print the values of the sensors.
+
+Quit the script using \texttt{Ctrl+C}.
+
+To make the robot balance itself, we will use the main script described in the software section:
+
+\texttt{python3 main.py}
+
+Maybe one day this will work.
+
+\subsection{Working on the code}
+
+There are several ways to edit the code of the Sigi. The easiest way is to edit the files from the
+terminal using nano for example:
+
+\includegraphics[scale=0.37]{img/nano_main.png}
+
+But this is really inconvenient.
+
+Another way is to code from your computer(following the same instructions to clone the repo), push
+changes to github, and pull them from the Raspberry Pi.
+
+It feels to be the natural way to do it in my opinion. However, being able to quickly edit the
+code from the Raspberry Pi can be useful, so I advise you to get an editor on the Raspberry Pi.
+
+The most convenient in this domain is Visual Studio Code: you can have it running on your computer,
+and connected to the raspberry pi to edit the code directly on the Raspberry Pi.
+
+The only downside is that you will have two windows of VS Code running all the time (one on your
+computer, and one on the Raspberry Pi), but it is not a big deal.
+
+Furthermore, VS Code has plenty of capabilities, like the git integration, allowing you to manage
+your commits directly from the editor.
+
+The cherry on the cake is that all we need to use VS Code remotely is the SSh connection!
+
+\subsubsection{Installing Visual Studio Code, some extensions, and connecting remotely}
+
+If you haven't installed it yet, \href{https://code.visualstudio.com/}{download Visual Studio Code}
+on your computer.
+
+
+In the extensions tab, you can install the Remote - SSH extension.
+I also advise you to install some extensions:
+
+\begin{itemize}
+    \item Python for easy Python coding and debugging;
+    \item Jupyter for Jupyter notebooks;
+    \item Gitlens for git integration;
+    \item Trunk for linting and formatting management;
+    \item Black Formatter and isort for python code formatting;
+    \item vscode-pdf for pdf reading;
+    \item or LaTeX Workshop for LaTeX writing;
+    \item Markdown All in One for markdown editing;
+    \item rainbow-CSV or Excel Viewer for better readability of CSV files;
+    \item indent-rainbow for better readability of code;
+    \item Remote Explorer if you plan to connect to multiple devices;
+    \item Doki Theme for nice visual themes;
+\end{itemize}
+
+If several extensions show up, choose the one from Microsoft, or the one with the biggest number of
+downloads.
+
+\includegraphics[scale=0.2]{img/vsc_exts.png}
+
+Now let's connect to the Raspberry Pi using the Remote - SSH extension.
+
+Click on the icon with the \texttt{><} sign(remote button) and choose Remote-SSH: Connect to Host.
+Add a new ssh host, and enter the exact command you used to connect to the Raspberry Pi.
+
+\includegraphics[scale=0.5]{img/vsc_ssh.png}
+
+Update the default configuration file unless you have specific needs for it.
+
+Then you can click on the remote button again, and click connect to host. The host you have just
+added will be labelled by its IP address, but you can change it in the configuration file,
+by choosing the option Configure SSH Hosts.
+
+\includegraphics[scale=0.5]{img/vsc_ssh2.png}
+
+\includegraphics[scale=0.5]{img/vsc_ssh_edit.png}
+
+Warning: the option to change is Host, not HostName. HostName is the address of the host(IP,
+domain...). You should not need the Port field if you have not changed your system's default ssh
+port.
+
+\includegraphics[scale=0.5]{img/vsc_ssh_edit2.png}
+
+Now let's actually connect to the Raspberry Pi by clicking on the host in the connect list.
+
+A new window should open, and after VS Code has installed the server on the Raspberry Pi, you
+should be connected, and the name on the remote button should be \texttt{SSH: <your host>}.
+
+\includegraphics[scale=0.3]{img/vsc_ssh_connecting.png}
+
+\includegraphics[scale=0.3]{img/vsc_ssh_connected.png}
+
+If it doesn't work, check that the ssh command works in the terminal. Also, you will need the
+Raspberry Pi to be connected to the internet, at least for the first connection and when VS Code
+updates.
+
+Now we can work as usual on the Raspberry Pi, but with the comfort of VS Code.
+
+You can open a terminal on the Raspberry Pi directly from VS Code, and run the commands we have
+used for checks directly from there.
+
+If they did not re-install automatically on the remote window, you can install the extensions
+again, especially the Python extension.
+
+Click Open Folder to open the folder we cloned earlier.
+
+\includegraphics[scale=0.3]{img/vsc_open_folder.png}
+
+You can open the file \texttt{main.py} or \texttt{get\_sensors.py} and debug them directly using
+f5 or the options of the green play button.
+
+Check that the Python interpreter is the virtual environment we have created on the bottom bar:
+it should say something like \texttt{'.venv': venv}.
+
+You can create a launch.json file to configure the debugging options, and make launching easier.
+All the configuration is done automatically by VS Code, but you can change it if you want.
+
+Here is how it should look like when you are debugging if you have an error:
+
+\includegraphics[scale=0.3]{img/vsc_debug.png}
+
+Using git, you can keep your code up to date between your computer and the Raspberry Pi.
+If you edit the code, you can push the changes to the repository using the git panel, or using the
+terminal.
+
+You should be all set to work on the Sigi now!
+
+If you have any questions or suggestions on how to improve this tutorial, do not hesitate to open
+an issue or a PR on the Github repository.
 
 \end{document}
 
