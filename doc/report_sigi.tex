@@ -78,14 +78,7 @@ Sigi bypass the battery regulator and feed the motors with the micro-USB power w
 This jumper is located between the VSW and the 5V pins near the micro USB port of the Balboa board.
 
 \begin{center}
-    % \begin{figure}                % I don't know how to use this
-        
-        
-        \includegraphics{img/power.png}
-
-        Figure 1: The jumper wire on the Sigi robot voltage lines.
-    % \end{figure}
-
+    \includegraphics{img/power.png}
 \end{center}
 
 This is fine most of the time, but it can occasionally cause problems.
@@ -267,7 +260,7 @@ the callback in the loop.
 This means that the code can be controlled from the main thread, while
 the loop is running in another thread.
 Any function can be used as a callback, which makes it easy to add new functions. For example, if
-logging the output of the estimator is needed, it can be added in the middle callback.
+logging the output of the estimator is needed, it can be added in the middle of the callback.
 
 Every function added to the callback will be executed, and their output will be sent to the next
 function. This is a simple way to chain functions.
